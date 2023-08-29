@@ -9,7 +9,7 @@ import os
 import secrets
 
 # Set up your credentials and configurations
-service_account_file = os.environ["BIG_QUERY_KEY"]  # Change to your service account key file
+service_account_file = "intricate-idiom-379506-21563d575ba3.json"  # Change to your service account key file
 project = "intricate-idiom-379506"
 dataset = "volveprod"
 table = "volveprod"
