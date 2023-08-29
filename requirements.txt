@@ -3,3 +3,4 @@ google-cloud-bigquery
 sqlalchemy
 langchain
 openai
+sqlalchemy-bigquery
