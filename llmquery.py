@@ -6,23 +6,21 @@ from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 from langchain.sql_database import SQLDatabase
 from langchain.llms.openai import OpenAI
 import os
-import secrets
-import toml
+import json
 
 # Create the Streamlit app
 st.title("Chat with Your Database")
 
-# Load the service account information from the Streamlit secret as a string
+# Load the service account information from Streamlit secrets
 service_account_info_str = st.secrets["gcp_service_account"]
 
-# Parse the TOML-formatted service account information
-service_account_info = toml.loads(service_account_info_str)
+# Parse the JSON-formatted service account information
+service_account_info = json.loads(service_account_info_str)
 
 # Set up your credentials and configurations
-project = "intricate-idiom-379506"
-dataset = "volveprod"
-table = "volveprod"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = service_account_info["private_key"]
+project = service_account_info["project_id"]
+dataset = "volveprod"  # Set your dataset name here
 
 # Initialize SQLDatabase, OpenAI, and the agent executor
 db = SQLDatabase.from_uri(f"bigquery://{project}/{dataset}")
