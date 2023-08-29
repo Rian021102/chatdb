@@ -5,11 +5,14 @@ from langchain.agents import create_sql_agent
 from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 from langchain.sql_database import SQLDatabase
 from langchain.llms.openai import OpenAI
+from google.oauth2 import service_account
 import os
 import secrets
 
 # Set up your credentials and configurations
-service_account_file = "intricate-idiom-379506-21563d575ba3.json"  # Change to your service account key file
+service_account_file = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)  # Change to your service account key file
 project = "intricate-idiom-379506"
 dataset = "volveprod"
 table = "volveprod"
