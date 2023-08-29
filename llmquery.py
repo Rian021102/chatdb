@@ -6,14 +6,15 @@ from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 from langchain.sql_database import SQLDatabase
 from langchain.llms.openai import OpenAI
 import os
+import secrets
 
 # Set up your credentials and configurations
-service_account_file = "intricate-idiom-379506-21563d575ba3.json"  # Change to your service account key file
+service_account_file = secrets["BIG_QUERY_KEY"]  # Change to your service account key file
 project = "intricate-idiom-379506"
 dataset = "volveprod"
 table = "volveprod"
 sqlalchemy_url = f'bigquery://{project}/{dataset}?credentials_path={service_account_file}'
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = secrets["OPEN_AI_KEY"]
 
 # Initialize SQLDatabase, OpenAI, and the agent executor
 db = SQLDatabase.from_uri(sqlalchemy_url)
