@@ -14,7 +14,7 @@ project = "intricate-idiom-379506"
 dataset = "volveprod"
 table = "volveprod"
 sqlalchemy_url = f'bigquery://{project}/{dataset}?credentials_path={service_account_file}'
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
 # Initialize SQLDatabase, OpenAI, and the agent executor
 db = SQLDatabase.from_uri(sqlalchemy_url)
