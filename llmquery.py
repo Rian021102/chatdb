@@ -6,24 +6,23 @@ from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 from langchain.sql_database import SQLDatabase
 from langchain.llms.openai import OpenAI
 from google.oauth2 import service_account
-from google.cloud import bigquery
 import os
-import json
 
 # Create the Streamlit app
 st.title("Chat with Your Database")
 
 # Set up your credentials and configurations
-service_account_file = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"]
-) # Change to where your service account key file is located
+service_account_info = st.secrets["gcp_service_account"]
 project = "intricate-idiom-379506"
 dataset = "volveprod"
 table = "volveprod"
-sqlalchemy_url = f'bigquery://{project}/{dataset}?credentials_path={service_account_file}'
 
-# Initialize SQLDatabase, OpenAI, and the agent executor
-db = SQLDatabase.from_uri(sqlalchemy_url)
+# Create a credentials object from the JSON key content
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
+
+# Set the GOOGLE_APPLICATION_CREDENTIALS environment variable to authenticate
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = None  # Clear any existing env variable
+db = SQLDatabase.from_uri(f'bigquery://{project}/{dataset}', credentials=credentials)
 llm = OpenAI(temperature=0, model="text-davinci-003")
 toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 agent_executor = create_sql_agent(
@@ -65,5 +64,3 @@ if st.button("Execute"):
         st.write(result)
     else:
         st.warning("Please enter a query.")
-
-# Add any other Streamlit components as needed
