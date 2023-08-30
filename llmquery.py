@@ -5,6 +5,8 @@ from langchain.agents import create_sql_agent
 from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 from langchain.sql_database import SQLDatabase
 from langchain.llms.openai import OpenAI
+from google.oauth2 import service_account
+from google.cloud import bigquery
 import os
 import json
 
@@ -21,12 +23,16 @@ service_account_info_json = json.dumps(service_account_info_str)
 service_account_info = json.loads(service_account_info_json)
 
 # Set up your credentials and configurations
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = service_account_info["private_key"]
-project = service_account_info["project_id"]
-dataset = "volveprod"  # Set your dataset name here
+service_account_file = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+) # Change to where your service account key file is located
+project = "intricate-idiom-379506"
+dataset = "volveprod"
+table = "volveprod"
+sqlalchemy_url = f'bigquery://{project}/{dataset}?credentials_path={service_account_file}'
 
 # Initialize SQLDatabase, OpenAI, and the agent executor
-db = SQLDatabase.from_uri(f"bigquery://{project}/{dataset}")
+db = SQLDatabase.from_uri(sqlalchemy_url)
 llm = OpenAI(temperature=0, model="text-davinci-003")
 toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 agent_executor = create_sql_agent(
