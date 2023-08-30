@@ -14,8 +14,11 @@ st.title("Chat with Your Database")
 # Load the service account information from Streamlit secrets
 service_account_info_str = st.secrets["gcp_service_account"]
 
+# Convert AttrDict to JSON string
+service_account_info_json = json.dumps(service_account_info_str)
+
 # Parse the JSON-formatted service account information
-service_account_info = json.loads(service_account_info_str)
+service_account_info = json.loads(service_account_info_json)
 
 # Set up your credentials and configurations
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = service_account_info["private_key"]
