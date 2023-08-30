@@ -17,13 +17,6 @@ table = "volveprod"
 # Retrieve the JSON key content from Streamlit secrets
 service_account_info = st.secrets["gcp_service_account"]
 
-# Set the GOOGLE_APPLICATION_CREDENTIALS environment variable
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/tmp/gcp_credentials.json"
-
-# Create a temporary file and write the JSON key content to it
-with open("/tmp/gcp_credentials.json", "w") as credentials_file:
-    credentials_file.write(service_account_info)
-
 # Initialize SQLDatabase, OpenAI, and the agent executor
 db = SQLDatabase.from_uri(f'bigquery://{project}/{dataset}')
 llm = OpenAI(temperature=0, model="text-davinci-003")
@@ -52,7 +45,8 @@ the dataset is uploaded to the google bigquery
 st.markdown(
     """
     Put your query here for instance:
-    show 5 row oil volume of the well bore named 15/9-F-1 C? descending by DATEPRD where BORE_OIL_VOL > 0.0
+    show 5 row oil volume of well 15/9-F-1 C? descending by date where oil volume is not zero,
+    or you can ask show the well name in the dataset distinct by well name
     """
 )
 user_input = st.text_input("Enter your query:")
