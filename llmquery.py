@@ -13,15 +13,6 @@ import json
 # Create the Streamlit app
 st.title("Chat with Your Database")
 
-# Load the service account information from Streamlit secrets
-service_account_info_str = st.secrets["gcp_service_account"]
-
-# Convert AttrDict to JSON string
-service_account_info_json = json.dumps(service_account_info_str)
-
-# Parse the JSON-formatted service account information
-service_account_info = json.loads(service_account_info_json)
-
 # Set up your credentials and configurations
 service_account_file = service_account.Credentials.from_service_account_info(
     st.secrets["gcp_service_account"]
