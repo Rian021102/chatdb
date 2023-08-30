@@ -24,7 +24,7 @@ service_account_info = st.secrets["gcp_service_account"]
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
 
 # Set the GOOGLE_APPLICATION_CREDENTIALS environment variable to authenticate
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = None  # Clear any existing env variable
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""  # Set it to an empty string
 db = SQLDatabase.from_uri(f'bigquery://{project}/{dataset}', credentials=credentials)
 llm = OpenAI(temperature=0, model="text-davinci-003")
 toolkit = SQLDatabaseToolkit(db=db, llm=llm)
