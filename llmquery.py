@@ -6,16 +6,19 @@ from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 from langchain.sql_database import SQLDatabase
 from langchain.llms.openai import OpenAI
 from google.oauth2 import service_account
+from google.cloud import bigquery
 import os
 
 # Create the Streamlit app
 st.title("Chat with Your Database")
 
 # Set up your credentials and configurations
-service_account_info = st.secrets["gcp_service_account"]
 project = "intricate-idiom-379506"
 dataset = "volveprod"
 table = "volveprod"
+
+# Retrieve the JSON key content from Streamlit secrets
+service_account_info = st.secrets["gcp_service_account"]
 
 # Create a credentials object from the JSON key content
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
