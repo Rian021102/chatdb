@@ -8,38 +8,19 @@ from langchain.llms.openai import OpenAI
 import secrets
 import os
 import re
+from google.oauth2 import service_account
+from google.cloud import bigquery
 
 # Create the Streamlit app
 st.title("Chat with Your Database")
 
-# Set up your credentials and configurations using github secret
-# Set up your credentials and configurations using github secret
-gcp_service_account = st.secrets["gcp_service_account"]
+# Set up your credentials and configurations using GitHub secret
+# Create API client.
+credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)
+client = bigquery.Client(credentials=credentials)
 
-# Extract the required fields from the AttrDict
-private_key_id = gcp_service_account["private_key_id"]
-private_key = gcp_service_account["private_key"]
-client_email = gcp_service_account["client_email"]
-
-# Create a JSON key string
-gcp_service_account_json = f'''
-{{
-  "type": "service_account",
-  "project_id": "intricate-idiom-379506",
-  "private_key_id": "{private_key_id}",
-  "private_key": "{private_key}",
-  "client_email": "{client_email}",
-  "client_id": "114664848711218640743",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/{client_email}",
-  "universe_domain": "googleapis.com"
-}}
-'''
-
-# Set the environment variable
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = gcp_service_account_json
 # Database connection
 project = "intricate-idiom-379506"
 dataset = "volveprod"
