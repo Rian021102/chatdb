@@ -14,8 +14,8 @@ st.title("Chat with Your Database")
 
 # Set up your credentials and configurations using github secret
 gcp_service_account = st.secrets["gcp_service_account"]
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = gcp_service_account
-os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+gcp_service_account_json = gcp_service_account.to_json()  # Extract the JSON key as a string
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = gcp_service_account_json  # Set the environment variable
 
 # Database connection
 project = "intricate-idiom-379506"
