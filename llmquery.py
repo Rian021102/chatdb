@@ -25,7 +25,7 @@ client = bigquery.Client(credentials=credentials)
 project = "intricate-idiom-379506"
 dataset = "volveprod"
 table = "volveprod"
-sqlalchemy_url = f'bigquery://{project}/{dataset}?credentials_path={credentials}'
+sqlalchemy_url = f'bigquery://{project}/{dataset}'
 
 db = SQLDatabase.from_uri(sqlalchemy_url)
 llm = OpenAI(temperature=0, model="text-davinci-003")
