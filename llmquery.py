@@ -1,24 +1,27 @@
 import streamlit as st
+import pandas as pd  # Import pandas
 from sqlalchemy.engine import create_engine
 from langchain.agents import create_sql_agent
 from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 from langchain.sql_database import SQLDatabase
 from langchain.llms.openai import OpenAI
+import secrets
 import os
-
+import re
 # Create the Streamlit app
 st.title("Chat with Your Database")
 
-# Set up your credentials and configurations
+# Set up your credentials and configurations using github secret
+
+service_account_file = secrets.BIG_QUERY_KEY
 project = "intricate-idiom-379506"
 dataset = "volveprod"
 table = "volveprod"
+sqlalchemy_url = f'bigquery://{project}/{dataset}?credentials_path={service_account_file}'
 
-# Retrieve the JSON key content from Streamlit secrets
-service_account_info = st.secrets["gcp_service_account"]
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
-# Initialize SQLDatabase, OpenAI, and the agent executor
-db = SQLDatabase.from_uri(f'bigquery://{project}/{dataset}')
+db = SQLDatabase.from_uri(sqlalchemy_url)
 llm = OpenAI(temperature=0, model="text-davinci-003")
 toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 agent_executor = create_sql_agent(
@@ -57,6 +60,7 @@ if st.button("Execute"):
         # Execute the agent with user input
         result = agent_executor.run(user_input)
         st.write("Agent Response:")
-        st.write(result)
+        st.write(result)      
+
     else:
         st.warning("Please enter a query.")
