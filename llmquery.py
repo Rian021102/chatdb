@@ -1,5 +1,5 @@
 import streamlit as st
-import pandas as pd  # Import pandas
+import pandas as pd
 from sqlalchemy.engine import create_engine
 from langchain.agents import create_sql_agent
 from langchain.agents.agent_toolkits import SQLDatabaseToolkit
@@ -8,18 +8,20 @@ from langchain.llms.openai import OpenAI
 import secrets
 import os
 import re
+
 # Create the Streamlit app
 st.title("Chat with Your Database")
 
 # Set up your credentials and configurations using github secret
+gcp_service_account = st.secrets["gcp_service_account"]
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = gcp_service_account
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
-service_account_file = secrets.BIG_QUERY_KEY
+# Database connection
 project = "intricate-idiom-379506"
 dataset = "volveprod"
 table = "volveprod"
-sqlalchemy_url = f'bigquery://{project}/{dataset}?credentials_path={service_account_file}'
-
-os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+sqlalchemy_url = f'bigquery://{project}/{dataset}'
 
 db = SQLDatabase.from_uri(sqlalchemy_url)
 llm = OpenAI(temperature=0, model="text-davinci-003")
@@ -47,9 +49,9 @@ the dataset is uploaded to the google bigquery
 # Input text box for user input
 st.markdown(
     """
-    Put your query here for instance:
+    Put your query here, for instance:
     show 5 row oil volume of well 15/9-F-1 C? descending by date where oil volume is not zero,
-    or you can ask show the well name in the dataset distinct by well name
+    or you can ask to show the well name in the dataset distinct by well name
     """
 )
 user_input = st.text_input("Enter your query:")
