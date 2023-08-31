@@ -16,16 +16,12 @@ st.title("Chat with Your Database")
 
 # Set up your credentials and configurations using GitHub secret
 # Create API client.
-credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"]
-)
-client = bigquery.Client(credentials=credentials)
-
-# Database connection
+# Set up your credentials and configurations
+service_account_file = "intricate-idiom-379506-21563d575ba3.json"  # Change to where your service account key file is located
 project = "intricate-idiom-379506"
 dataset = "volveprod"
 table = "volveprod"
-sqlalchemy_url = f'bigquery://{project}/{dataset}'
+sqlalchemy_url = f'bigquery://{project}/{dataset}?credentials_path={service_account_file}'
 
 db = SQLDatabase.from_uri(sqlalchemy_url)
 llm = OpenAI(temperature=0, model="text-davinci-003")
